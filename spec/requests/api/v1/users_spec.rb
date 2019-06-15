@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Users API', type: :request do
     let!(:user) { create(:user) }
     let(:user_id) { user.id }
-    
+    let(:headers) { { "Accept" => "application/vnd.projetofase8.v1" } }
     
     before { host! "localhost:3000/api" }
     describe "Users tests" do
@@ -11,7 +11,7 @@ RSpec.describe 'Users API', type: :request do
         describe "GET user/:id" do
             
             before do
-                headers = { "Accept" => "application/vnd.projetofase8.v1" }
+                #headers = { "Accept" => "application/vnd.projetofase8.v1" }
                 get "/users/#{user_id}", params: {}, headers: headers
             end
 
@@ -37,7 +37,7 @@ RSpec.describe 'Users API', type: :request do
         describe "POST user/" do
             
             before do
-                headers = { "Accept" => "application/vnd.projetofase8.v1" }
+                #headers = { "Accept" => "application/vnd.projetofase8.v1" }
                 post "/users/", params: { user: user_params }, headers: headers
             end
 
@@ -71,7 +71,7 @@ RSpec.describe 'Users API', type: :request do
         describe "PUT user/:id" do
             
             before do
-                headers = { "Accept" => "application/vnd.projetofase8.v1" }
+                #headers = { "Accept" => "application/vnd.projetofase8.v1" }
                 put "/users/#{user_id}", params: { user: user_params }, headers: headers
             end
 
@@ -105,7 +105,7 @@ RSpec.describe 'Users API', type: :request do
         describe "DELETE user/:id" do
 
             before do
-                headers = { "Accept" => "application/vnd.projetofase8.v1" }
+                #headers = { "Accept" => "application/vnd.projetofase8.v1" }
                 delete "/users/#{user_id}", params: {}, headers: headers
             end
 
