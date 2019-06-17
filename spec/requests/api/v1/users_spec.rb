@@ -17,8 +17,8 @@ RSpec.describe 'Users API', type: :request do
 
             context "when the user exists" do
                 it "returns the user" do
-                    user_response = JSON.parse(response.body)
-                    expect(user_response["id"]).to eq(user_id)
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body["id"]).to eq(user_id)
                 end
                 it "return status code 200" do
                     expect(response).to have_http_status(200)
@@ -49,8 +49,8 @@ RSpec.describe 'Users API', type: :request do
                 end
 
                 it "returns the json data dor the created user" do
-                    user_response = JSON.parse(response.body)
-                    expect(user_response['email']).to eq(user_params[:email])
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body['email']).to eq(user_params[:email])
                 end           
             end
 
@@ -62,8 +62,21 @@ RSpec.describe 'Users API', type: :request do
                 end
 
                 it "returns the json data for the erros" do
-                    user_response = JSON.parse(response.body)
-                    expect(user_response).to have_key('errors')
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body).to have_key('errors')
+                end
+            end
+
+            context "when the user requests password params are invalid" do
+                let(:user_params){ attributes_for(:user, password: "email_invalido@") }
+
+                it "returns status code 422" do
+                    expect(response).to have_http_status(422)
+                end
+
+                it "returns the json data for the erros" do
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body).to have_key('errors')
                 end
             end
         end
@@ -83,8 +96,8 @@ RSpec.describe 'Users API', type: :request do
                 end
 
                 it "returns the json data dor the updated user" do
-                    user_response = JSON.parse(response.body)
-                    expect(user_response['email']).to eq(user_params[:email])
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body['email']).to eq(user_params[:email])
                 end           
             end
 
@@ -96,8 +109,21 @@ RSpec.describe 'Users API', type: :request do
                 end
 
                 it "returns the json data for the erros" do
-                    user_response = JSON.parse(response.body)
-                    expect(user_response).to have_key('errors')
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body).to have_key('errors')
+                end
+            end
+
+            context "when the user requests password params are invalid" do
+                let(:user_params){ { password: "123" } }
+
+                it "returns status code 422" do
+                    expect(response).to have_http_status(422)
+                end
+
+                it "returns the json data for the erros" do
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body).to have_key('errors')
                 end
             end
         end
