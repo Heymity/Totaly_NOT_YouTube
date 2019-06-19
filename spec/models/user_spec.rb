@@ -9,5 +9,6 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_presence_of(:password) }
     it { is_expected.to allow_value("teste@supergeeks.com").for(:email) }
     it { is_expected.to allow_value("123456$%^&*()").for(:password) }
-    it { is_expected.to validate_uniqueness_of(:auth_token) } 
+    it { is_expected.to validate_uniqueness_of(:auth_token) }
+    #it { is_expected.to allow_value(nil).for(:email) }
 end

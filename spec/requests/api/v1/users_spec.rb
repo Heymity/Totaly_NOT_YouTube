@@ -51,9 +51,19 @@ RSpec.describe 'Users API', type: :request do
                 it "returns the json data dor the created user" do
                     #user_response = JSON.parse(response.body)
                     expect(json_body["email"]).to eq(user_params[:email])
-                end           
+                end 
+                
+                it "returns the json data dor the created user(password)" do
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body["password_confirmation"]).to eq(user_params[:password_confirmation])
+                end
+                
+            #    it "returns the json data dor the created user(auth_token)" do
+            #        #user_response = JSON.parse(response.body)
+            #        expect(json_body["auth_token"]).to eq(user_params[:auth_token])
+            #    end 
             end
-
+            
             context "when the the request params are invalid" do
                 let(:user_params){ attributes_for(:user, email: "email_invalido@") }
 
