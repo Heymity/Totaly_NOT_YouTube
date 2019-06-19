@@ -50,7 +50,7 @@ RSpec.describe 'Users API', type: :request do
 
                 it "returns the json data dor the created user" do
                     #user_response = JSON.parse(response.body)
-                    expect(json_body['email']).to eq(user_params[:email])
+                    expect(json_body["email"]).to eq(user_params[:email])
                 end           
             end
 
@@ -67,8 +67,8 @@ RSpec.describe 'Users API', type: :request do
                 end
             end
 
-            context "when the user requests password params are invalid" do
-                let(:user_params){ attributes_for(:user, password: "email_invalido@") }
+            context "when the the password request params are invalid" do
+                let(:user_params){ attributes_for(:user, password: "12345") }
 
                 it "returns status code 422" do
                     expect(response).to have_http_status(422)
@@ -97,25 +97,12 @@ RSpec.describe 'Users API', type: :request do
 
                 it "returns the json data dor the updated user" do
                     #user_response = JSON.parse(response.body)
-                    expect(json_body['email']).to eq(user_params[:email])
+                    expect(json_body["email"]).to eq(user_params[:email])
                 end           
             end
 
             context "when the the request params are invalid" do
                 let(:user_params){ { email: "email_invalido@" } }
-
-                it "returns status code 422" do
-                    expect(response).to have_http_status(422)
-                end
-
-                it "returns the json data for the erros" do
-                    #user_response = JSON.parse(response.body)
-                    expect(json_body).to have_key('errors')
-                end
-            end
-
-            context "when the user requests password params are invalid" do
-                let(:user_params){ { password: "123" } }
 
                 it "returns status code 422" do
                     expect(response).to have_http_status(422)
