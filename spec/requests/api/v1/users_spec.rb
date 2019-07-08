@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Users API', type: :request do
     let!(:user) { create(:user) }
     let(:user_id) { user.id }
-    let(:headers) { { "Accept" => "application/vnd.projetofase8.v1" } }
+    let(:headers) { { "Accept" => "application/vnd.projetofase8.v1", "Authorization" => user.auth_token } }
     
     before { host! "localhost:3000/api" }
     describe "Users tests" do
@@ -48,16 +48,16 @@ RSpec.describe 'Users API', type: :request do
                     expect(response).to have_http_status(201)
                 end
 
-                it "returns the json data dor the created user" do
+                it "returns the json data for the created user" do
                     #user_response = JSON.parse(response.body)
                     expect(json_body["email"]).to eq(user_params[:email])
                 end 
                 
-                it "returns the json data dor the created user(password)" do
-                    #user_response = JSON.parse(response.body)
-                    expect(json_body["password_confirmation"]).to eq(user_params[:password_confirmation])
-                end
-                
+            #    it "returns the json data for the created user(password)" do
+            #       #user_response = JSON.parse(response.body)
+            #        expect(json_body["password_confirmation"]).to eq(user_params[:password_confirmation])
+            #    end
+            #    
             #    it "returns the json data dor the created user(auth_token)" do
             #        #user_response = JSON.parse(response.body)
             #        expect(json_body["auth_token"]).to eq(user_params[:auth_token])
