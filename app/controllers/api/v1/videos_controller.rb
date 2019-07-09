@@ -1,5 +1,5 @@
 class Api::V1::VideosController < ApplicationController
-    before_action :authenticate_with_token!
+    before_action :authenticate_with_token!, expect: [:index, :show]
 
     def index
         videos = current_user.videos
@@ -34,7 +34,7 @@ class Api::V1::VideosController < ApplicationController
         video.destroy
         head 204
     end
-    
+
     private
 
     def video_params
