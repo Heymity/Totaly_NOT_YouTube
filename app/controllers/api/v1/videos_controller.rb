@@ -12,8 +12,8 @@ class Api::V1::VideosController < ApplicationController
     end
 
     def create
-        gain = current_user.videos.build(gain_params)
-        if gain.save
+        video = current_user.videos.build(video_params)
+        if video.save
             render json: video, status: 201
         else
             render json: { errors: video.errors }, status: 422
@@ -22,7 +22,7 @@ class Api::V1::VideosController < ApplicationController
 
     def update
         video = current_user.videos.find(params[:id])
-        if gain.update_attributes(video_params)
+        if video.update_attributes(video_params)
             render json: video, status: 200
         else
             render json: { errors: video.errors }, status: 422

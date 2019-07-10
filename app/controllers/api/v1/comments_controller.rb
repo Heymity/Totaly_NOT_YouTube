@@ -1,6 +1,7 @@
 class Api::V1::CommentsController < ApplicationController
     before_action :authenticate_with_token!, expect: [:index, :show]
-    
+    before_action :setVideo
+
     def index
         comments = current_user.comments
         render json: { comments: comments }, status: 200
@@ -12,8 +13,9 @@ class Api::V1::CommentsController < ApplicationController
     end
 
     def create
-        gain = current_user.comments.build(gain_params)
-        if gain.save
+        comment = current_user.comments.build(comment_params)
+        comment.video_id = @video.id
+        if comment.save
             render json: comment, status: 201
         else
             render json: { errors: comment.errors }, status: 422
@@ -22,7 +24,7 @@ class Api::V1::CommentsController < ApplicationController
 
     def update
         comment = current_user.comments.find(params[:id])
-        if gain.update_attributes(video_params)
+        if comment.update_attributes(comment_params)
             render json: comment, status: 200
         else
             render json: { errors: comment.errors }, status: 422
@@ -37,9 +39,13 @@ class Api::V1::CommentsController < ApplicationController
 
     private
 
-    def video_params
+    def setVideo
+        @video = current_user.videos.find(params[:video_id])
+    end
+    
+    def comment_params
         params.require(:comment).permit(:description)
     end
 end
 
-end
+
