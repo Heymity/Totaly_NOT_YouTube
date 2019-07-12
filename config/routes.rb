@@ -1,6 +1,7 @@
 require 'api_version_constraint'
 
 Rails.application.routes.draw do
+  
 	devise_for :users, controllers: {sessions: "api/v1/sessions"}
 	# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 	namespace :api, defaults: {format: :json} do
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
 		end
 
 		namespace :v2, path: "/", constraints: ApiVersionConstraint.new(version: 2, default: true) do
+			mount_devise_token_auth_for 'User', at: 'auth'
 			resources :users
 			resources :sessions
 			resources :videos do
