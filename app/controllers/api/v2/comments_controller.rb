@@ -3,7 +3,7 @@ class Api::V2::CommentsController < ApplicationController
     before_action :setVideo
 
     def index
-        comments = current_user.comments
+        comments = current_user.comments.ransack(params[:q]).result
         render json: comments, status: 200
     end
 

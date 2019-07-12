@@ -52,4 +52,6 @@ gem 'devise', '~> 4.6', '>= 4.6.2'
 
 gem 'active_model_serializers', '~> 0.10.0'
 
+gem 'ransack'
+
 gem 'activestorage'

@@ -2,7 +2,7 @@ class Api::V2::VideosController < ApplicationController
     before_action :authenticate_with_token!, expect: [:index, :show]
 
     def index
-        videos = current_user.videos
+        videos = current_user.videos.ransack(params[:q]).result
         render json: videos, status: 200
     end
 
