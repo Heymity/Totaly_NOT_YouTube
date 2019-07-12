@@ -3,9 +3,11 @@ require 'rails_helper'
 RSpec.describe 'Videos API', type: :request do
     let!(:user) { create(:user) }
     let!(:auth_data) { user.create_new_auth_token }
-    let(:id) { video.id }
+    let(:video_id) { video.id }
     let(:user_id) { user.id }
+    let(:id) { comment.id }
     let!(:video) { create(:video, user_id: user_id) }
+    let!(:comment) { create(:comment, user_id: user_id, video_id: video_id)}
     let(:headers) do
         { 
             "Accept" => "application/vnd.projetofase8.v2", 
@@ -18,18 +20,18 @@ RSpec.describe 'Videos API', type: :request do
     
     
     before { host! "localhost:3000/api" }
-    describe "Videos tests" do
+    describe "Comments tests" do
 
-        describe "GET videos/:id" do
+        describe "GET comments/:id" do
             
             
             before do             
                 #headers = { "Accept" => "application/vnd.projetofase8.v1" }
-                get "/videos/#{id}", params: {}, headers: headers
+                get "/videos/#{video_id}/comments/#{id}", params: {}, headers: headers
             end
 
-            context "when the video exists" do
-                it "returns the video" do
+            context "when the comment exists" do
+                it "returns the comment" do
                     #user_response = JSON.parse(response.body)
                     expect(json_body["data"]["id"]).to eq(String(id))
                 end
@@ -38,8 +40,8 @@ RSpec.describe 'Videos API', type: :request do
                 end
             end
 
-            context "when the video doesn`t exists" do
-                let(:id){ 10000 }
+            context "when the comment doesn`t exists" do
+                let(:id){ 9999999 }
 
                 it "returns status code 404" do
                     expect(response).to have_http_status(404)
@@ -47,28 +49,28 @@ RSpec.describe 'Videos API', type: :request do
             end
         end
 
-        describe "POST /videos" do
+        describe "POST /comments" do
         
             before do
                 #headers = { "Accept" => "application/vnd.projetofase8.v1" }
-                post "/videos", params: { video: video_params }, headers: headers
+                post "/videos/#{video_id}/comments", params: { comment: comment_params }, headers: headers
             end
             
             context "when the request params are valid" do
-                let(:video_params){ attributes_for(:video) }
+                let(:comment_params){ attributes_for(:comment) }
                 
                 it "returns status code 201" do
                     expect(response).to have_http_status(201)
                 end
                 
-                it "returns json data for the created video" do
+                it "returns json data for the created comment" do
                     #user_response = JSON.parse(response.body)
-                    expect(json_body['data']['attributes']['video_text']).to eq(video_params[:video_text])
+                    expect(json_body['data']['attributes']['description']).to eq(comment_params[:description])
                 end
             end
             
             context "when the request params are invalid" do
-                let(:video_params){ attributes_for(:video, video_text: nil) }
+                let(:comment_params){ attributes_for(:comment, description: nil) }
                 
                 it "returns status code 422" do
                     expect(response).to have_http_status(422)
@@ -82,11 +84,11 @@ RSpec.describe 'Videos API', type: :request do
             
         end
 
-        describe "DELETE user/:id" do
+        describe "DELETE comment/:id" do
 
             before do
                 #headers = { "Accept" => "application/vnd.projetofase8.v1" }
-                delete "/videos/#{id}", params: {}, headers: headers
+                delete "/videos/#{video_id}/comments/#{id}", params: {}, headers: headers
             end
 
             it "returns status code 204" do

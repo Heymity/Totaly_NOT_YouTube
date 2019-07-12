@@ -1,5 +1,5 @@
 class Api::V2::VideosController < Api::V2::BaseController
-    before_action :authenticate_with_token!, expect: [:index, :show]
+    before_action :authenticate_user!, expect: [:index, :show]
 
     def index
         videos = current_user.videos.ransack(params[:q]).result

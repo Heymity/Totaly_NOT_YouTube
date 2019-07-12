@@ -1,5 +1,5 @@
 class Api::V2::CommentsController < Api::V2::BaseController
-    before_action :authenticate_with_token!, expect: [:index, :show]
+    before_action :authenticate_user!, expect: [:index, :show]
     before_action :setVideo
 
     def index
@@ -8,8 +8,12 @@ class Api::V2::CommentsController < Api::V2::BaseController
     end
 
     def show
-        comment = current_user.comments.find(params[:id])
-        render json: comment, status: 200
+        begin
+            comment = current_user.comments.find(params[:id])
+            render json: comment, status: 200
+        rescue
+            head 404
+        end
     end
 
     def create

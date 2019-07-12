@@ -2,143 +2,134 @@ require 'rails_helper'
 
 RSpec.describe 'Users API', type: :request do
     let!(:user) { create(:user) }
-    let(:user_id) { user.id }
-    let(:headers) { { "Accept" => "application/vnd.projetofase8.v2", "Authorization" => user.auth_token } }
+    let!(:auth_data) { user.create_new_auth_token }
+    let(:headers) do
+        { 
+            "Accept" => "application/vnd.projetofase8.v2", 
+            "Authorization" => user.auth_token,
+            "access-token" => auth_data['access-token'],
+            "uid" => auth_data['uid'],
+            "client" => auth_data['client']
+        }
+    end
     
     before { host! "localhost:3000/api" }
-    describe "Users tests" do
-
-        describe "GET user/:id" do
-            
+    
+    describe "GET /auth/validate_token" do
+        
+        context "when the request headers are valid" do
             before do
                 #headers = { "Accept" => "application/vnd.projetofase8.v1" }
-                get "/users/#{user_id}", params: {}, headers: headers
+                get "/auth/validate_token", params: {}, headers: headers
             end
-
-            context "when the user exists" do
-                it "returns the user" do
-                    #user_response = JSON.parse(response.body)
-                    expect(json_body["id"]).to eq(user_id)
-                end
-                it "return status code 200" do
-                    expect(response).to have_http_status(200)
-                end
+            it "returns the user" do
+                #user_response = JSON.parse(response.body)
+                expect(json_body["data"]["id"].to_i).to eq(user.id)
             end
-
-            context "when the user doesn`t exists" do
-                let(:user_id){ 10000 }
-
-                it "returns status code 404" do
-                    expect(response).to have_http_status(404)
-                end
+            it "returns status code 200" do
+                expect(response).to have_http_status(200)
             end
         end
-
-        describe "POST user/" do
-            
+        
+        context "when the request headers are not valid" do
             before do
+                headers["access-token"] = "invalid_token"
                 #headers = { "Accept" => "application/vnd.projetofase8.v1" }
-                post "/users/", params: { user: user_params }, headers: headers
+                get "/auth/validate_token", params: {}, headers: headers
             end
-
-            context "when the request params are valid" do
-                let(:user_params){ attributes_for(:user) }
-                
-                it "return status code 201" do
-                    expect(response).to have_http_status(201)
-                end
-
-                it "returns the json data for the created user" do
-                    #user_response = JSON.parse(response.body)
-                    expect(json_body["email"]).to eq(user_params[:email])
-                end 
-                
-            #    it "returns the json data for the created user(password)" do
-            #       #user_response = JSON.parse(response.body)
-            #        expect(json_body["password_confirmation"]).to eq(user_params[:password_confirmation])
-            #    end
-            #    
-            #    it "returns the json data dor the created user(auth_token)" do
-            #        #user_response = JSON.parse(response.body)
-            #        expect(json_body["auth_token"]).to eq(user_params[:auth_token])
-            #    end 
+                        
+            it "returns status code 401" do
+                expect(response).to have_http_status(401)
+            end
+        end
+    
+    end
+    
+    describe "POST /auth" do
+        
+        before do
+            #headers = { "Accept" => "application/vnd.projetofase8.v1" }
+            post "/auth", params: user_params, headers: headers
+        end
+        
+        context "when the request params are valid" do
+            let(:user_params){ attributes_for(:user) }
+            
+            it "returns status code 200" do
+                expect(response).to have_http_status(200)
             end
             
-            context "when the the request params are invalid" do
-                let(:user_params){ attributes_for(:user, email: "email_invalido@") }
-
-                it "returns status code 422" do
-                    expect(response).to have_http_status(422)
-                end
-
-                it "returns the json data for the erros" do
-                    #user_response = JSON.parse(response.body)
-                    expect(json_body).to have_key('errors')
-                end
-            end
-
-            context "when the the password request params are invalid" do
-                let(:user_params){ attributes_for(:user, password: "12345") }
-
-                it "returns status code 422" do
-                    expect(response).to have_http_status(422)
-                end
-
-                it "returns the json data for the erros" do
-                    #user_response = JSON.parse(response.body)
-                    expect(json_body).to have_key('errors')
-                end
+            it "returns json data for the created user" do
+                #user_response = JSON.parse(response.body)
+                expect(json_body['data']['email']).to eq(user_params[:email])
             end
         end
-
-        describe "PUT user/:id" do
+        
+        context "when the request params are invalid" do
+            let(:user_params){ attributes_for(:user, email: "email_invalido@") }
             
-            before do
-                #headers = { "Accept" => "application/vnd.projetofase8.v1" }
-                put "/users/#{user_id}", params: { user: user_params }, headers: headers
+            it "returns status code 422" do
+                expect(response).to have_http_status(422)
             end
-
-            context "when the request params are valid" do
-                let(:user_params){ { email: 'novo@email.com' } }
-                
-                it "return status code 200" do
-                    expect(response).to have_http_status(200)
-                end
-
-                it "returns the json data dor the updated user" do
-                    #user_response = JSON.parse(response.body)
-                    expect(json_body["email"]).to eq(user_params[:email])
-                end           
+            
+            it "returns the json data for the erros" do
+                #user_response = JSON.parse(response.body)
+                expect(json_body).to have_key('errors')
             end
-
-            context "when the the request params are invalid" do
-                let(:user_params){ { email: "email_invalido@" } }
-
-                it "returns status code 422" do
-                    expect(response).to have_http_status(422)
-                end
-
-                it "returns the json data for the erros" do
-                    #user_response = JSON.parse(response.body)
-                    expect(json_body).to have_key('errors')
-                end
+        end 
+        
+    end
+    
+    describe "PUT /auth" do
+        
+        before do
+            #headers = { "Accept" => "application/vnd.projetofase8.v1" }
+            put "/auth", params: user_params, headers: headers
+        end
+        
+        context "when the request params are valid" do
+            let(:user_params){ { email: 'novo@email.com' } }
+            
+            it "returns status code 200" do
+                expect(response).to have_http_status(200)
+            end
+            
+            it "returns json data for the update user" do
+                #user_response = JSON.parse(response.body)
+                expect(json_body['data']['email']).to eq(user_params[:email])
             end
         end
-
-        describe "DELETE user/:id" do
-
-            before do
-                #headers = { "Accept" => "application/vnd.projetofase8.v1" }
-                delete "/users/#{user_id}", params: {}, headers: headers
+        
+        context "when the request params are invalid" do
+            let(:user_params){ { email: 'email_invalido@' } }
+            
+            it "returns status code 422" do
+                expect(response).to have_http_status(422)
             end
-
-            it "returns status code 204" do
-                expect(response).to have_http_status(204)
-            end
-
-            it "removes the user from the database" do
-                expect( User.find_by(id: user.id) ).to be_nil
+            
+            it "returns the json data for the erros" do
+                #user_response = JSON.parse(response.body)
+                expect(json_body).to have_key('errors')
             end
         end
-    end 
-end     
+    
+    end
+    
+    describe "DELETE /auth" do
+        
+        before do
+            #headers = { "Accept" => "application/vnd.projetofase8.v1" }
+            delete "/auth", params: {}, headers: headers
+        end
+        
+        it "returns status code 200" do
+            expect(response).to have_http_status(200)
+        end
+        
+        it "removes the user from database" do
+            expect( User.find_by(id: user.id) ).to be_nil
+        end
+        
+    end
+    
+end
