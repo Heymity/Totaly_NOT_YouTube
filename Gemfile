@@ -60,4 +60,6 @@ gem 'rack-cors'
 
 gem 'devise_token_auth'
 
+gem 'rails-i18n'
+
 gem 'activestorage'

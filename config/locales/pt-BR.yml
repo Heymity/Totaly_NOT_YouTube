@@ -1,0 +1,5 @@
+---
+  pt-BR:
+    time:
+      formats:
+        databr: "%d/%m/%Y"

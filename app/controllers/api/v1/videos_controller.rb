@@ -1,5 +1,5 @@
-class Api::V1::VideosController < BaseController
-    before_action :authenticate_user!, expect: [:index, :show]
+class Api::V1::VideosController < Api::V1::BaseController
+    before_action :authenticate_with_token!, expect: [:index, :show]
 
     def index
         videos = current_user.videos
