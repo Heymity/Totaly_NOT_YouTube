@@ -1,9 +1,9 @@
-class Api::V1::VideosController < ApplicationController
+class Api::V2::VideosController < ApplicationController
     before_action :authenticate_with_token!, expect: [:index, :show]
 
     def index
         videos = current_user.videos
-        render json: { videos: videos }, status: 200
+        render json: videos, status: 200
     end
 
     def show
