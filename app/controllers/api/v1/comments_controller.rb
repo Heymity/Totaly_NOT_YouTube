@@ -1,4 +1,4 @@
-class Api::V1::CommentsController < BaseController
+class Api::V1::CommentsController < Api::V1::BaseController
     before_action :authenticate_user!, expect: [:index, :show]
     before_action :setVideo
 

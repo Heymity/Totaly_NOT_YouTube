@@ -1,4 +1,4 @@
-class Api::V2::VideosController < BaseController
+class Api::V2::VideosController < Api::V2::BaseController
     before_action :authenticate_with_token!, expect: [:index, :show]
 
     def index

@@ -1,4 +1,4 @@
-class Api::V2::CommentsController < BaseController
+class Api::V2::CommentsController < Api::V2::BaseController
     before_action :authenticate_with_token!, expect: [:index, :show]
     before_action :setVideo
 

@@ -1,4 +1,4 @@
-class Api::V1::VideosController < BaseController
+class Api::V1::VideosController < Api::V1::BaseController
     before_action :authenticate_user!, expect: [:index, :show]
 
     def index
