@@ -1,4 +1,5 @@
 class Api::V2::VideosController < Api::V2::BaseController
+    
     before_action :authenticate_user!, expect: [:index, :show]
 
     def index
@@ -17,6 +18,8 @@ class Api::V2::VideosController < Api::V2::BaseController
 
     def create
         video = current_user.videos.build(video_params)
+        #@video = Video.new(video_params)
+        #@video.user_id = current_user.id
         if video.save
             render json: video, status: 201
         else
@@ -29,7 +32,7 @@ class Api::V2::VideosController < Api::V2::BaseController
         if video.update_attributes(video_params)
             render json: video, status: 200
         else
-            render json: { errors: video.errors }, status: 422
+            render json: { errors: videoss.errors }, status: 422
         end
     end
 
