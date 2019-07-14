@@ -60,10 +60,24 @@ RSpec.describe 'Videos API', type: :request do
                 it "returns status code 201" do
                     expect(response).to have_http_status(201)
                 end
+
+                it "saves the video in the database" do
+                    expect( Video.find_by(video_text: video_params[:video_text]) ).not_to be_nil
+                end
                 
-                it "returns json data for the created video" do
+                it "returns json data of video_text for the created video" do
                     #user_response = JSON.parse(response.body)
-                    expect(json_body['data']['attributes']['video_text']).to eq(video_params[:video_text])
+                    expect(json_body['data']['attributes']['video-text']).to eq(video_params[:video_text])
+                end
+
+                it "returns json data of description for the created video" do
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body['data']['attributes']['description']).to eq(video_params[:description])
+                end
+
+                it "returns json data of user_id for the created video" do
+                    #user_response = JSON.parse(response.body)
+                    expect(json_body['data']['relationships']['user_id']).to eq(video_params[:user_id])
                 end
             end
             

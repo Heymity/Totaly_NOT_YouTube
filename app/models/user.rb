@@ -13,7 +13,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
 
   def info
-    "{email} - #{created_at} - #{Devise.friendly_token}" 
+    "#{email} - #{created_at} - #{Devise.friendly_token}" 
   end
 
   def generate_authentication_token!

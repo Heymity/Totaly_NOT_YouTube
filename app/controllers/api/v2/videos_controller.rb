@@ -1,6 +1,7 @@
 class Api::V2::VideosController < Api::V2::BaseController
     
     before_action :authenticate_user!, expect: [:index, :show]
+    #before_action :define_video!
 
     def index
         videos = current_user.videos.ransack(params[:q]).result
@@ -17,9 +18,13 @@ class Api::V2::VideosController < Api::V2::BaseController
     end
 
     def create
-        video = current_user.videos.build(video_params)
-        #@video = Video.new(video_params)
-        #@video.user_id = current_user.id
+        #video = current_user.videos.build(video_params)
+        #video = Video.new(video_params)      
+        video = Video.create(video_params)
+        video.user_id = current_user.id
+        #if video.video_text == nil 
+         #   video.define_video!
+        #end
         if video.save
             render json: video, status: 201
         else
